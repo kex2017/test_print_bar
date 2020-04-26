@@ -22,7 +22,6 @@ QUIET ?= 0
 FEATURES_REQUIRED += periph_timer
 FEATURES_REQUIRED += periph_uart
 FEATURES_REQUIRED += periph_uart_modecfg
-FEATURES_OPTIONAL += periph_lpuart 
 FEATURES_REQUIRED += periph_gpio
 FEATURES_REQUIRED += periph_spi
 # FEATURES_REQUIRED += periph_rtt
@@ -35,9 +34,8 @@ USEMODULE += xtimer
 USEMODULE += isrpipe
 USEMODULE += isrpipe_read_timeout
 
-# DRIVER ?= sx1276
-# WERROR = 0
-# use SX1276 by default
+DRIVER ?= sx1276
+
 USEMODULE += $(DRIVER)
 
 include $(RIOTBASE)/Makefile.include
