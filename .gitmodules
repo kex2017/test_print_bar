@@ -1,0 +1,4 @@
+[submodule "RIOT"]
+	path = RIOT
+	url = http://220.189.213.2:10000/MCU/RIOT.git
+	branch = 2020.01-branch-p2p
