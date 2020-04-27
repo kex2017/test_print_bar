@@ -1,7 +1,6 @@
 if SWD
 device stm32l151cc
 speed 4000
-erase
 loadfile ./bin/kl_p2p/lora-p2p-sctm.hex
 r
 q
