@@ -4,7 +4,7 @@ APPLICATION = lora-p2p-sctm
 RIOTBASE ?= $(CURDIR)/../RIOT
 
 # If no BOARD is found in the environment, use this default:
-BOARD ?= kl_p2p
+BOARD ?= kl_p2p_sctm
 # BOARD ?= nucleo-f103rb
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
