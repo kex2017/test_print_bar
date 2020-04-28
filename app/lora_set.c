@@ -20,6 +20,7 @@
 #include "sx127x_internal.h"
 #include "sx127x_params.h"
 #include "sx127x_netdev.h"
+#include "sx127x_registers.h"
 
 // #include "data_transfer.h"
 // #include "frame_paser.h"
@@ -209,12 +210,23 @@ int lora_send_message(uint8_t *message,uint8_t message_len)
     }
 
     DEBUG("[lora] sending \"%s\" payload (%u bytes)\n", message, message_len);
-
     caller_pid = thread_getpid();
 
+#if 1
     /* Wait until the function receive some information */
-    xtimer_usleep(100 * 1000);
+    DEBUG("before:read opmode as %d\r\n",sx127x_get_op_mode((sx127x_t*)netdev));
     lora_listen_message();
+    int retry_times = 0;
+    while((SX127X_RF_OPMODE_RECEIVER != sx127x_get_op_mode((sx127x_t*)netdev)) && retry_times < 30){
+        xtimer_usleep(100*1000);
+        retry_times++;
+    }
+    if(retry_times == 30){
+        DEBUG("[lora] listen mode set error !retry time is %d\r\n", retry_times);
+    }
+    DEBUG("after:read opmode as %d\r\n",sx127x_get_op_mode((sx127x_t*)netdev));
+#endif
+
     return 0;
 
     // lora_transfer_status = LORA_LISTEN;
@@ -237,10 +249,7 @@ int lora_listen_message(void)
     /* Switch to RX state */
     uint8_t state = NETOPT_STATE_RX;
     netdev->driver->set(netdev, NETOPT_STATE, &state, sizeof(state));
-    netdev->driver->get(netdev, 5, &state, sizeof(state));
-    // if(state == NETOPT_STATE_RX){
-    //     DEBUG("[lora] Listen mode set\r\n");
-    // }
+
     DEBUG("[lora] Listen mode set\r\n");
     return 0;
 }

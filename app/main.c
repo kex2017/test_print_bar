@@ -14,7 +14,7 @@ static const shell_command_t shell_commands[] = {
 };
 
 uint8_t id[CPUID_LEN];
-char *test_send = "-----------2";
+char *test_send = "-----------1";
 int main(void)
 {
     /* read the CPUID */
@@ -32,7 +32,7 @@ int main(void)
     lora_set_init();
 
     for(int i = 0; i < 200; i++){
-        xtimer_sleep(5);
+        xtimer_sleep(3);
         lora_send_message((uint8_t*)test_send, strlen(test_send));
     }
 
