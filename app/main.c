@@ -40,16 +40,14 @@ uint8_t decode_test[] = {0x55, 0xff, 0x00, 0x0c, 0x0a, 0x0a, 0x08, 0x1b, 0x10, 0
 
 int main(void)
 {
-    // frame_decode(decode_test, sizeof(decode_test));
-    frame_hander_init();
-
     init_dev_cfg();
 
     lora_vcc_b_on();
 
     xtimer_sleep(1);
 
-    lora_io_setup(SX127X_CHAN, SX127X_CHAN, SX127X_BW, SX127X_SF, SX127X_CR, frame_decode);//frame_receive_handler);
+    frame_hander_init();
+    lora_io_setup(SX127X_CHAN, SX127X_CHAN, SX127X_BW, SX127X_SF, SX127X_CR, frame_receive_handler);
 
     lora_io_serv_start();
     temperature_sample_serv_start();

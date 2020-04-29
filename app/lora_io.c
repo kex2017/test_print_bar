@@ -19,13 +19,13 @@
 #define ENABLE_DEBUG (1)
 #include "debug.h"
 
-#define LORA_IO_PAYLOAD_NUM 10
+#define LORA_IO_PAYLOAD_NUM 2
 
 #define LORA_IO_SERV_PRIORITY 5
 #define LORA_IO_SERV_STACKSIZE 1024
 
 #define LORA_IO_RECV_PRIORITY 6
-#define LORA_IO_RECV_STACKSIZE 1024
+#define LORA_IO_RECV_STACKSIZE (1024*2)
 
 #define SX127X_LORA_MSG_QUEUE   (16U)
 #define MSG_TYPE_ISR            (0x3456)

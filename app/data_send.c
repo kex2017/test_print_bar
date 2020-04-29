@@ -76,7 +76,7 @@ int frame_receive_handler(uint8_t *data, uint16_t len)
     {
         printf("do frame parser...");
         frame_decode(parser_buff + 4, len - 3);
-        // memset(parser_buff, 0, len);
+        memset(parser_buff, 0, len);
     }
 
     return 0;

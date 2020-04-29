@@ -74,7 +74,7 @@ uint16_t frame_encode(uint8_t *data, uint8_t *pb_buf, uint32_t pb_buf_len)
 {
     uint16_t index = 0;
 
-    // index += frame_header_encode(data, pb_buf_len);
+    index += frame_header_encode(data, pb_buf_len);
 
     index += frame_protocbuf_encode(data + index, pb_buf, pb_buf_len);
 
