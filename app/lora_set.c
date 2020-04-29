@@ -202,6 +202,8 @@ int lora_send_message(uint8_t *message,uint8_t message_len)
     iolist_t iolist = {
         .iol_base = message,
         .iol_len = message_len};
+    sx127x_set_syncword(&sx127x, LORA_SYNCWORD_PRIVATE);//LORA_SYNCWORD_PUBLIC
+    DEBUG("get sync :0x%x \r\n", sx127x_get_syncword(&sx127x));
 
     netdev_t *netdev = (netdev_t *)&sx127x;
     if (netdev->driver->send(netdev, &iolist) == -ENOTSUP)
@@ -212,19 +214,22 @@ int lora_send_message(uint8_t *message,uint8_t message_len)
     DEBUG("[lora] sending \"%s\" payload (%u bytes)\n", message, message_len);
     caller_pid = thread_getpid();
 
+    return 0;
+
 #if 1
     /* Wait until the function receive some information */
-    DEBUG("before:read opmode as %d\r\n",sx127x_get_op_mode((sx127x_t*)netdev));
+    // DEBUG("before:read opmode as %d\r\n",sx127x_get_op_mode((sx127x_t*)netdev));
     lora_listen_message();
     int retry_times = 0;
     while((SX127X_RF_OPMODE_RECEIVER != sx127x_get_op_mode((sx127x_t*)netdev)) && retry_times < 30){
+        DEBUG("opt mode %d\r\n", sx127x_get_op_mode((sx127x_t*)netdev));
         xtimer_usleep(100*1000);
         retry_times++;
     }
     if(retry_times == 30){
         DEBUG("[lora] listen mode set error !retry time is %d\r\n", retry_times);
     }
-    DEBUG("after:read opmode as %d\r\n",sx127x_get_op_mode((sx127x_t*)netdev));
+    // DEBUG("after:read opmode as %d\r\n",sx127x_get_op_mode((sx127x_t*)netdev));
 #endif
 
     return 0;
@@ -252,6 +257,11 @@ int lora_listen_message(void)
 
     DEBUG("[lora] Listen mode set\r\n");
     return 0;
+}
+
+bool is_rssi_free(int16_t rssi_threshold)
+{
+    return sx127x_is_channel_free(&sx127x, SX127X_CHAN, rssi_threshold);
 }
 
 void *_recv_thread(void *arg)

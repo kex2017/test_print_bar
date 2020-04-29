@@ -4,7 +4,7 @@ APPLICATION = lora-p2p-sctm
 RIOTBASE ?= $(CURDIR)/../RIOT
 
 # If no BOARD is found in the environment, use this default:
-BOARD ?= kl_p2p
+BOARD ?= kl_p2p_sctm
 # BOARD ?= nucleo-f103rb
 # Comment this out to disable code in RIOT that does safety checking
 # which is not needed in a production environment but helps in the
@@ -24,15 +24,21 @@ FEATURES_REQUIRED += periph_uart
 FEATURES_REQUIRED += periph_uart_modecfg
 FEATURES_REQUIRED += periph_gpio
 FEATURES_REQUIRED += periph_spi
-# FEATURES_REQUIRED += periph_rtt
+FEATURES_REQUIRED += periph_rtc
+FEATURES_REQUIRED += periph_flashpage
 
+USEMODULE += frame_paser
 USEMODULE += od
 USEMODULE += shell
 USEMODULE += shell_commands
 USEMODULE += ps
+USEMODULE += printf_float
 USEMODULE += xtimer
 USEMODULE += isrpipe
 USEMODULE += isrpipe_read_timeout
+
+USEPKG += nanopb
+USEMODULE += ds18
 
 DRIVER ?= sx1276
 

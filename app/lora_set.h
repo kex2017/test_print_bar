@@ -45,6 +45,7 @@ void lora_set_sf(sx127x_t sx127x,uint8_t lora_sf);
 void lora_set_cr(sx127x_t sx127x, uint8_t cr);
 void lora_set_init(void);
 int lora_listen_message(void);
+bool is_rssi_free(int16_t rssi_threshold);
 void lora_set_channel(sx127x_t sx127x,int channel);
 kernel_pid_t lora_recv_service_init(void);
 

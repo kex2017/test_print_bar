@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+message Transfer{
+    node_info_req_t node_info_req=1;
+    node_info_rsp_t node_info_rsp=2;
+}
+
+message node_info_req_t{
+    int64 timestamp =1; //时间戳
+    int32 node_id=2;    //节点ID
+    float temperature=3;//温度
+    int32 error_code=4; //错误码
+}
+
+message node_info_rsp_t{
+    int64 timestamp =1; //时间戳
+    int32 node_id=2;    //节点ID
+}
+
