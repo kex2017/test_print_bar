@@ -18,7 +18,7 @@
 #define LORA_UART_RX_BUFFSIZE (128U)
 
 #define SX127X_BW (125)//bandwidth
-#define SX127X_SF (12)//spreading factor
+#define SX127X_SF (7)//spreading factor
 #define SX127X_CR (5) //coding rate
 #define SX127X_CHAN (470000000)
 

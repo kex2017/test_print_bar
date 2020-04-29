@@ -11,7 +11,7 @@ enum {
 };
 
 #define TEMP_SAMPLE_RETRY_TIMES (5)
-#define TEMP_SAMPLE_PERIOD (2)
+#define TEMP_SAMPLE_PERIOD (5)
 
 int ds18b20_init(void);
 

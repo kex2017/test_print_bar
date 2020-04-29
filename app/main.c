@@ -14,6 +14,8 @@
 
 #include "dev_cfg.h"
 #include "sc_dev_cfg.h"
+#include "frame_decode.h"
+#include "data_send.h"
 
 static const shell_command_t shell_commands[] = {
     {"setenv", "set env cfg", set_env_cfg},
@@ -34,15 +36,20 @@ int frame_receive(uint8_t *data, uint16_t len)
     return 0;
 }
 
+uint8_t decode_test[] = {0x55, 0xff, 0x00, 0x0c, 0x0a, 0x0a, 0x08, 0x1b, 0x10, 0xea, 0x07, 0x1d, 0xe1, 0x7a, 0xd4, 0x41, 0x00, 0x5b};
+
 int main(void)
 {
+    // frame_decode(decode_test, sizeof(decode_test));
+    frame_hander_init();
+
     init_dev_cfg();
 
     lora_vcc_b_on();
 
     xtimer_sleep(1);
 
-    lora_io_setup(SX127X_CHAN, SX127X_CHAN, SX127X_BW, SX127X_SF, SX127X_CR, frame_receive);
+    lora_io_setup(SX127X_CHAN, SX127X_CHAN, SX127X_BW, SX127X_SF, SX127X_CR, frame_decode);//frame_receive_handler);
 
     lora_io_serv_start();
     temperature_sample_serv_start();
