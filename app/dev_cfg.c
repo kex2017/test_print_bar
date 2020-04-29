@@ -49,6 +49,11 @@ void record_lora_error_info(uint32_t timestamp, uint8_t error_code)
     update_saved_dev_cfg();
 }
 
+void clear_lora_status_info(void)
+{
+    memset(&g_dev_cfg->lora_run_status, 0, sizeof(lora_run_status_t));
+}
+
 void update_saved_dev_cfg(void)
 {
     uint32_t page = 0;

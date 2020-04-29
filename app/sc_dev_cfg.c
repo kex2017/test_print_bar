@@ -17,6 +17,8 @@ void env_cfg_usage(void)
     printf("\t\t set device timestamp\r\n");
     printf("\t -i, --id=<device_id>\r\n");
     printf("\t\t set new device ID\r\n");
+    printf("\t -c, --clear\r\n");
+    printf("\t\t clear lora record info\r\n");
 }
 
 static const struct option long_opts[] =
@@ -24,6 +26,7 @@ static const struct option long_opts[] =
         {"help", no_argument, NULL, 'h'},
         {"timestamp", required_argument, NULL, 't'},
         {"id", required_argument, NULL, 'i'},
+        {"clear", no_argument, NULL, 'c'},
         {NULL, 0, NULL, 0},
 };
 
@@ -38,7 +41,7 @@ int set_env_cfg(int argc, char **argv)
         return 1;
     }
 
-    while ((opt = getopt_long(argc, argv, "ht:i:", long_opts, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "ht:i:c", long_opts, NULL)) != -1)
     {
         switch (opt)
         {
@@ -54,6 +57,10 @@ int set_env_cfg(int argc, char **argv)
             device_id = (uint32_t)atoi(optarg);
             set_dev_id(device_id);
             printf("set dev id as :%ld\r\n", device_id);
+            break;
+        case 'c':
+            clear_lora_status_info();
+            printf("clear lora all record info\r\n");
             break;
         default:
             if (!optarg)

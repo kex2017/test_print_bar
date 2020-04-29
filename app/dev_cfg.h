@@ -50,5 +50,6 @@ uint32_t get_dev_id(void);
 void increase_lora_send_msg_num(void);
 void increase_lora_recv_msg_num(void);
 void record_lora_error_info(uint32_t timestamp, uint8_t error_code);
+void clear_lora_status_info(void);
 
 #endif
