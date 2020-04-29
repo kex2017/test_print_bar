@@ -4,6 +4,7 @@
 #include "board.h"
 #include "ds18.h"
 #include "ds18_params.h"
+#include "frame_decode.h"
 
 #include "xtimer.h"
 #include "periph/rtc.h"
@@ -108,9 +109,11 @@ void *temp_sample_serv(void *arg)
 
 kernel_pid_t temperature_sample_serv_start(void)
 {
-    kernel_pid_t sample_pid = thread_create(temp_sample_serv_stack,
+    kernel_pid_t _sample_pid = thread_create(temp_sample_serv_stack,
                                             sizeof(temp_sample_serv_stack),
                                             TEMP_SAMPLE_SERV_PRIORITY, THREAD_CREATE_STACKTEST,
                                             temp_sample_serv, NULL, "temperature_sample_serv");
-    return sample_pid;
+    printf("temperature pid is %d\r\n", _sample_pid);
+    get_sample_pid_hook(_sample_pid);
+    return _sample_pid;
 }

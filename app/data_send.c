@@ -1,17 +1,21 @@
 #include "data_send.h"
+
 #include "lora_io.h"
 #include "dev_cfg.h"
 #include "frame_encode.h"
 #include "frame_decode.h"
-#include "frame_paser.h"
 #include "frame_common.h"
 
 #define ENABLE_DEBUG (1)
 #include "debug.h"
+#include "frame_paser.h"
+#include "xtimer.h"
+#include "msg.h"
 
 #define MAX_SEND_BUF_SIZE (256)
 static uint8_t send_buf[MAX_SEND_BUF_SIZE] = {0};
-
+#define MAX_RESEND_TIMES (5)
+#define MAX_WAIT_MSG_100ms_TIMES (50)
 void encode_and_send_temp_data(uint32_t timestamps, float temperature, int error_code)
 {
     uint16_t len = 0;
@@ -23,8 +27,28 @@ void encode_and_send_temp_data(uint32_t timestamps, float temperature, int error
     msg.error_code = error_code;
 
     len = frame_temperature_data_encode(send_buf, msg);
-    // len = sprintf((char*)send_buf, "my id is %ld timestamp is %ld temperature is %.2f, error code is %d", get_dev_id(), timestamps, temperature, error_code);
     lora_io_send(send_buf, len);
+
+    msg_t recv_msg;
+    for (uint8_t resend_times = 0; resend_times < MAX_RESEND_TIMES; resend_times++)
+    {
+        uint8_t retry_times = 0;
+        lora_io_send(send_buf, len);
+        while ((msg_try_receive(&recv_msg) < 0) && retry_times < MAX_WAIT_MSG_100ms_TIMES) //wait for max time :5s
+        {
+            xtimer_usleep(100 * 1000);
+            retry_times++;
+        }
+        if(retry_times < MAX_WAIT_MSG_100ms_TIMES){
+            printf("receive rsp msg success!!!\r\n");
+            break;
+        }
+        else
+        {
+            printf("wait rsp msg over time, try resend times:%d\r\n", resend_times);
+        }
+
+    }
 
     // printf("encode buf as:\r\n");
     // for (uint16_t i = 0; i < len; i++)
