@@ -34,38 +34,18 @@ int frame_receive(uint8_t *data, uint16_t len)
     return 0;
 }
 
-char test_send[100] = {0};
 int main(void)
 {
     init_dev_cfg();
 
-    ds18_vcc_a_on();
     lora_vcc_b_on();
 
     xtimer_sleep(1);
 
-    ds18b20_init();
-
     lora_io_setup(SX127X_CHAN, SX127X_CHAN, SX127X_BW, SX127X_SF, SX127X_CR, frame_receive);
+
     lora_io_serv_start();
-
-    float temp = 0.0;
-    while (1)
-    {
-        ds18b20_get_temperature(&temp);
-        sprintf(test_send, "my id is %ld timestamp is %ld temperature is %.2f", get_dev_id(), rtc_get_counter(), temp);
-        lora_io_send((uint8_t *)test_send, strlen(test_send));
-        puts(test_send);
-        xtimer_sleep(SAMPLING_PERIOD);
-    }
-
-    // lora_set_init();
-
-    // for(int i = 0; i < 20000; i++){
-    //     xtimer_usleep(100*1000);
-    //     printf("is free :%d\r\n", is_rssi_free(-100));
-    //     lora_send_message((uint8_t*)test_send, strlen(test_send));
-    // }
+    temperature_sample_serv_start();
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
