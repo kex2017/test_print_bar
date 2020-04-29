@@ -81,6 +81,7 @@ void *temp_sample_serv(void *arg)
             power_on_ds18b20();
             do
             {
+                error_code &= ~TEMP_SENSOR_READ_ERROR;
                 error_code |= ds18b20_get_temperature(&temperature);
                 if (!error_code)
                     break;
