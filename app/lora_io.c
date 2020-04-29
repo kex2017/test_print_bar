@@ -193,7 +193,7 @@ uint8_t lora_check_bw_sf_cr(void)
 	}
 	netdev->driver->get(netdev, NETOPT_BANDWIDTH,&get_lora_bw, sizeof(get_lora_bw));
 	if(get_lora_bw != set_lora_bw){
-		error |= 0x01;
+		error |= BW_ERROR_MASK;
 		DEBUG("[lora io]: check: read back bw value is wrong!\r\n");
 		netdev->driver->set(netdev, NETOPT_BANDWIDTH,&set_lora_bw, sizeof(set_lora_bw));
 	}
@@ -206,7 +206,7 @@ uint8_t lora_check_bw_sf_cr(void)
     }
     netdev->driver->get(netdev, NETOPT_SPREADING_FACTOR,&get_lora_sf, sizeof(get_lora_sf));
 	if(get_lora_sf != set_lora_sf){
-		error |= 0x02;
+		error |= SF_ERROR_MASK;
 		DEBUG("[lora io]: check: read back sf value is wrong!\r\n");
 		netdev->driver->set(netdev, NETOPT_SPREADING_FACTOR,&set_lora_sf, sizeof(set_lora_sf));
 	}
@@ -221,7 +221,7 @@ uint8_t lora_check_bw_sf_cr(void)
     netdev->driver->get(netdev, NETOPT_CODING_RATE,&get_lora_cr, sizeof(get_lora_cr));
 	if(get_lora_cr != set_lora_cr)
 	{
-		error |= 0x04;
+		error |= CR_ERROR_MASK;
 		DEBUG("[lora io]: check: read back cr value is wrong!\r\n");
 		netdev->driver->set(netdev, NETOPT_CODING_RATE,&set_lora_cr, sizeof(set_lora_cr));
 	}

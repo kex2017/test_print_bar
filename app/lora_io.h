@@ -5,6 +5,9 @@
 #include <stdbool.h>
 
 #define LORA_IO_PAYLOAD_LEN 150
+#define BW_ERROR_MASK (0x01)
+#define SF_ERROR_MASK (0x02)
+#define CR_ERROR_MASK (0x04)
 
 typedef int(*lora_io_recv_handler_t)(uint8_t *data, uint16_t len);
 void lora_io_setup(int i_chan,int o_chan,uint8_t bw,uint8_t sf,uint8_t cr,lora_io_recv_handler_t lora_io_recv_handler);
