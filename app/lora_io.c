@@ -228,6 +228,10 @@ uint8_t lora_check_bw_sf_cr(void)
 	if(error){
 		record_lora_error_info(rtc_get_counter(), error);
 	}
+	else
+	{
+		DEBUG("[lora io]:check:lora cfg is right\r\n");
+	}
 
 	return error;
 }
