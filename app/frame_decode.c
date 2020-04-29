@@ -5,6 +5,7 @@
 #include <pb_decode.h>
 #include <pb_common.h>
 #include "proto_compiled/sctm.pb.h"
+#include "msg.h"
 
 const pb_msgdesc_t *decode_unionmessage_type(pb_istream_t *stream)
 {
@@ -44,6 +45,13 @@ bool decode_unionmessage_contents(pb_istream_t *stream, const pb_msgdesc_t *mess
     return status;
 }
 
+kernel_pid_t sample_pid;
+
+void get_sample_pid_hook(kernel_pid_t pid)
+{
+    sample_pid = pid;
+}
+
 int frame_decode(uint8_t *buffer, uint16_t count)
 {
     /* Read the data into buffer */
@@ -58,6 +66,9 @@ int frame_decode(uint8_t *buffer, uint16_t count)
         status = decode_unionmessage_contents(&stream, node_info_req_t_fields, &msg);
         printf("decode timestamp is %ld, node_id is %ld, temperature is %.2f, error_code is %d\r\n",
                (uint32_t)msg.timestamp, (uint32_t)msg.node_id, msg.temperature, (int)msg.error_code);
+        msg_t send_msg;
+        msg_try_send(&send_msg, sample_pid);
+        printf("receive rsp send msg pid is %d\r\n", sample_pid);
     }
     else if (type == node_info_rsp_t_fields)
     {
