@@ -1,5 +1,5 @@
 #include "ds18b20.h"
-#include "data_send.h"
+#include "data_transfer.h"
 
 #include "board.h"
 #include "ds18.h"

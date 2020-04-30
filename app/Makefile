@@ -40,6 +40,7 @@ USEMODULE += isrpipe_read_timeout
 USEPKG += nanopb
 USEMODULE += ds18
 USEMODULE += frame_paser
+# USEMODULE += log_printftimestamp
 
 DRIVER ?= sx1276
 

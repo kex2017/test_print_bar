@@ -15,7 +15,7 @@
 #include "dev_cfg.h"
 #include "sc_dev_cfg.h"
 #include "frame_decode.h"
-#include "data_send.h"
+#include "data_transfer.h"
 
 static const shell_command_t shell_commands[] = {
     {"setenv", "set env cfg", set_env_cfg},

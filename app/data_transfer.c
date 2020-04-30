@@ -1,4 +1,4 @@
-#include "data_send.h"
+#include "data_transfer.h"
 
 #include "lora_io.h"
 #include "dev_cfg.h"
@@ -89,6 +89,7 @@ void frame_hander_init(void)
 
 int frame_receive_handler(uint8_t *data, uint16_t len)
 {
+    int parser_frame_len = 0;
 
     if (!is_frame_parser_busy(&fp_dev))
     {
@@ -98,11 +99,17 @@ int frame_receive_handler(uint8_t *data, uint16_t len)
     {
         DEBUG("[data recv]:frame parser busy!\r\n");
     }
-    if ((len = do_frame_parser(&fp_dev, parser_buff, FRAME_PARSER_DATA_LEN)) > 0)
+    if ((parser_frame_len = do_frame_parser(&fp_dev, parser_buff, FRAME_PARSER_DATA_LEN)) > 0)
     {
+        printf("parser data len :%d is :\r\n", parser_frame_len);
+        for (int i = 0; i < parser_frame_len; i++)
+        {
+            printf("%02x ", parser_buff[i]);
+        }
+
         DEBUG("[data recv]:frame parser ok!\r\n");
-        frame_decode(parser_buff + 4, len - 3);
-        memset(parser_buff, 0, len);
+        frame_decode(parser_buff + 4, parser_frame_len - 3);
+        memset(parser_buff, 0, parser_frame_len);
     }
 
     return 0;
