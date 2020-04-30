@@ -6,6 +6,9 @@
 #include "frame_paser.h"
 #include "frame_common.h"
 
+#define ENABLE_DEBUG (1)
+#include "debug.h"
+
 #define MAX_SEND_BUF_SIZE (256)
 static uint8_t send_buf[MAX_SEND_BUF_SIZE] = {0};
 
@@ -23,13 +26,12 @@ void encode_and_send_temp_data(uint32_t timestamps, float temperature, int error
     // len = sprintf((char*)send_buf, "my id is %ld timestamp is %ld temperature is %.2f, error code is %d", get_dev_id(), timestamps, temperature, error_code);
     lora_io_send(send_buf, len);
 
-    printf("encode buf as:\r\n");
-    for (uint16_t i = 0; i < len; i++)
-    {
-        printf("%02x ", send_buf[i]);
-    }
-    printf("\r\n");
-    // puts((char*)send_buf);
+    // printf("encode buf as:\r\n");
+    // for (uint16_t i = 0; i < len; i++)
+    // {
+    //     printf("%02x ", send_buf[i]);
+    // }
+    // printf("\r\n");
 }
 
 #define FRAME_PARSER_DATA_LEN (128)
@@ -70,11 +72,11 @@ int frame_receive_handler(uint8_t *data, uint16_t len)
     }
     else
     {
-        printf("frame parser busy!\r\n");
+        DEBUG("[data recv]:frame parser busy!\r\n");
     }
     if ((len = do_frame_parser(&fp_dev, parser_buff, FRAME_PARSER_DATA_LEN)) > 0)
     {
-        printf("do frame parser...");
+        DEBUG("[data recv]:frame parser ok!\r\n");
         frame_decode(parser_buff + 4, len - 3);
         memset(parser_buff, 0, len);
     }
