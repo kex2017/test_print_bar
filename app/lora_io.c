@@ -16,7 +16,7 @@
 #include "periph/rtc.h"
 #include "dev_cfg.h"
 
-#define ENABLE_DEBUG (0)
+#define ENABLE_DEBUG (1)
 #include "debug.h"
 
 #define LORA_IO_PAYLOAD_NUM 2
