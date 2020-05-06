@@ -38,19 +38,18 @@ int frame_receive(uint8_t *data, uint16_t len)
 
 uint8_t decode_test[] = {0x55, 0xff, 0x00, 0x0c, 0x0a, 0x0a, 0x08, 0x1b, 0x10, 0xea, 0x07, 0x1d, 0xe1, 0x7a, 0xd4, 0x41, 0x00, 0x5b};
 
+extern void xtimer_frame_init(uint32_t char_interval);
+extern void wait_print_frame(void);
 int main(void)
 {
-    init_dev_cfg();
+    xtimer_frame_init(1 * 1000);
 
-    lora_vcc_b_on();
+    while (1)
+    {
+        xtimer_usleep(100 * 1000);
+        wait_print_frame();
+    }
 
-    xtimer_sleep(1);
-
-    frame_hander_init();
-    lora_io_setup(SX127X_CHAN, SX127X_CHAN, SX127X_BW, SX127X_SF, SX127X_CR, frame_receive_handler);
-
-    lora_io_serv_start();
-    // temperature_sample_serv_start();
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
