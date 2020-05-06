@@ -21,7 +21,7 @@ void collection_node_req_handler(node_info_req_t msg)
            timestamp, node_id, temperature, error_code);
 
     node_info_rsp_t rsp_msg = node_info_rsp_t_init_default;
-    rsp_msg.node_id = get_dev_id();
+    rsp_msg.node_id = node_id;
     rsp_msg.timestamp = rtc_get_counter();
 
     xtimer_usleep(500 * 1000);
