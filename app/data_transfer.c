@@ -27,8 +27,8 @@ void encode_and_send_temp_data(uint32_t timestamps, float temperature, int error
     msg.error_code = error_code;
 
     len = frame_temperature_req_data_encode(send_buf, node_info_req_t_fields, &msg);
-    lora_io_send(send_buf, len);
-    return ;
+    // lora_io_send(send_buf, len);
+    // return ;
     msg_t recv_msg;
     for (uint8_t resend_times = 0; resend_times < MAX_RESEND_TIMES; resend_times++)
     {

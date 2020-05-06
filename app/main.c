@@ -50,7 +50,7 @@ int main(void)
     lora_io_setup(SX127X_CHAN, SX127X_CHAN, SX127X_BW, SX127X_SF, SX127X_CR, frame_receive_handler);
 
     lora_io_serv_start();
-    temperature_sample_serv_start();
+    // temperature_sample_serv_start();
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);

@@ -20,7 +20,7 @@
 #define SX127X_BW (125)//bandwidth
 #define SX127X_SF (7)//spreading factor
 #define SX127X_CR (5) //coding rate
-#define SX127X_CHAN (470000000)
+#define SX127X_CHAN (480000000)
 
 typedef struct {
     char rx_mem[LORA_UART_RX_BUFFSIZE];

@@ -16,7 +16,7 @@
 #include "periph/rtc.h"
 #include "dev_cfg.h"
 
-#define ENABLE_DEBUG (1)
+#define ENABLE_DEBUG (0)
 #include "debug.h"
 
 #define LORA_IO_PAYLOAD_NUM 2
@@ -230,7 +230,7 @@ uint8_t lora_check_bw_sf_cr(void)
 	}
 	else
 	{
-		DEBUG("[lora io]:check:lora cfg is right\r\n");
+		DEBUG("[lora io]: check:lora cfg is right\r\n");
 	}
 
 	return error;

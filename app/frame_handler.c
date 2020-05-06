@@ -27,7 +27,7 @@ void collection_node_req_handler(node_info_req_t msg)
     uint16_t len = frame_temperature_rsp_data_encode(send_buf, node_info_rsp_t_fields, &rsp_msg);
     lora_io_send(send_buf, len);
 
-    printf("<-----[send] my node id is %ld timestamp is %ld\r\n", node_id, timestamp);
+    printf("<-----[send] my node id is %ld timestamp is %ld\r\n", rsp_msg.node_id, (uint32_t)rsp_msg.timestamp);
 }
 
 void collection_node_rsp_handler(node_info_rsp_t msg)

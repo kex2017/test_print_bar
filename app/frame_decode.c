@@ -66,21 +66,19 @@ int frame_decode(uint8_t *buffer, uint16_t count)
     {
         node_info_req_t msg = node_info_req_t_init_default;
         status = decode_unionmessage_contents(&stream, node_info_req_t_fields, &msg);
-        printf("--------------node_info_req handler---------------\r\n");
+        // printf("-------------->[receive]: node %ld temperature %.2f\r\n", msg.node_id, msg.temperature);
         collection_node_req_handler(msg);
-
-        // msg_t send_msg;
-        // msg_try_send(&send_msg, sample_pid);
-        // printf("receive rsp send msg pid is %d\r\n", sample_pid);
     }
     else if (type == node_info_rsp_t_fields)
     {
         node_info_rsp_t msg = {};
         status = decode_unionmessage_contents(&stream, node_info_rsp_t_fields, &msg);
-        printf("--------------node_info_rsp handler---------------\r\n");
-        printf("--------------------decode timestamp is %ld, node_id is %ld\r\n",
-               (uint32_t)msg.timestamp, msg.node_id);
-        collection_node_rsp_handler(msg);
+        printf("-------------->[receive]: from gateway node_info_rsp handler---------------\r\n");
+        // collection_node_rsp_handler(msg);
+
+        // msg_t send_msg;
+        // msg_send(&send_msg, sample_pid);
+        // printf("receive rsp send msg pid is %d\r\n", sample_pid);
     }
     else
     {
