@@ -7,6 +7,7 @@
 #include "lora_io.h"
 
 #include <stdio.h>
+#include "xtimer.h"
 
 static uint8_t send_buf[256] = {0};
 void collection_node_req_handler(node_info_req_t msg)
@@ -23,6 +24,7 @@ void collection_node_req_handler(node_info_req_t msg)
     rsp_msg.node_id = get_dev_id();
     rsp_msg.timestamp = rtc_get_counter();
 
+    xtimer_usleep(100 * 1000);
     memset(send_buf, 0, sizeof(send_buf));
     uint16_t len = frame_temperature_rsp_data_encode(send_buf, node_info_rsp_t_fields, &rsp_msg);
     lora_io_send(send_buf, len);
