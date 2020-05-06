@@ -8,6 +8,9 @@
 #include <pb_common.h>
 #include "proto_compiled/sctm.pb.h"
 
+#define ENABLE_DEBUG (1)
+#include "debug.h"
+
 static uint8_t proto_buffer[128];
 
 bool encode_unionmessage(pb_ostream_t *stream, const pb_msgdesc_t *messagetype, void *message)
@@ -83,15 +86,15 @@ uint16_t frame_encode(uint8_t *data, uint8_t *pb_buf, uint32_t pb_buf_len)
     return index;
 }
 
-uint16_t temperature_data_pb_encode(uint8_t *buffer, uint32_t buf_len, node_info_req_t msg)
+uint16_t data_pb_encode(uint8_t *buffer, uint32_t buf_len, const pb_msgdesc_t *messagetype, void *msg)
 {
     bool status = false;
     pb_ostream_t stream = pb_ostream_from_buffer(buffer, buf_len);
 
-    status = encode_unionmessage(&stream, node_info_req_t_fields, &msg);
+    status = encode_unionmessage(&stream, messagetype, msg);
     if (!status)
     {
-        printf("Encoding set valve confirm failed!\n");
+        DEBUG("[frame encode]:Encoding set valve confirm failed!\n");
         return 0;
     }
 
@@ -99,11 +102,20 @@ uint16_t temperature_data_pb_encode(uint8_t *buffer, uint32_t buf_len, node_info
 }
 
 /*********************************frame encode*********************************/
-uint16_t frame_temperature_data_encode(uint8_t *data, node_info_req_t msg)
+uint16_t frame_temperature_req_data_encode(uint8_t *data, const pb_msgdesc_t *messagetype, node_info_req_t *msg)
 {
     memset(proto_buffer, 0, sizeof(proto_buffer));
 
-    uint16_t protoc_buf_len = temperature_data_pb_encode(proto_buffer, sizeof(proto_buffer), msg);
+    uint16_t protoc_buf_len = data_pb_encode(proto_buffer, sizeof(proto_buffer), messagetype, msg);
+
+    return frame_encode(data, proto_buffer, protoc_buf_len);
+}
+
+uint16_t frame_temperature_rsp_data_encode(uint8_t *data, const pb_msgdesc_t *messagetype, node_info_rsp_t *msg)
+{
+    memset(proto_buffer, 0, sizeof(proto_buffer));
+
+    uint16_t protoc_buf_len = data_pb_encode(proto_buffer, sizeof(proto_buffer), messagetype, msg);
 
     return frame_encode(data, proto_buffer, protoc_buf_len);
 }

@@ -26,9 +26,9 @@ void encode_and_send_temp_data(uint32_t timestamps, float temperature, int error
     msg.temperature = temperature;
     msg.error_code = error_code;
 
-    len = frame_temperature_data_encode(send_buf, msg);
+    len = frame_temperature_req_data_encode(send_buf, node_info_req_t_fields, &msg);
     lora_io_send(send_buf, len);
-
+    return ;
     msg_t recv_msg;
     for (uint8_t resend_times = 0; resend_times < MAX_RESEND_TIMES; resend_times++)
     {
@@ -57,6 +57,8 @@ void encode_and_send_temp_data(uint32_t timestamps, float temperature, int error
     // }
     // printf("\r\n");
 }
+
+// void encode_send_temp_comfirm_data()
 
 #define FRAME_PARSER_DATA_LEN (128)
 /* Frame parser data thread start */
@@ -106,6 +108,7 @@ int frame_receive_handler(uint8_t *data, uint16_t len)
         {
             printf("%02x ", parser_buff[i]);
         }
+        printf("\r\n");
 
         DEBUG("[data recv]:frame parser ok!\r\n");
         frame_decode(parser_buff + 4, parser_frame_len - 3);

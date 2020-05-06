@@ -7,6 +7,8 @@
 #include "proto_compiled/sctm.pb.h"
 #include "msg.h"
 
+#include "frame_handler.h"
+
 const pb_msgdesc_t *decode_unionmessage_type(pb_istream_t *stream)
 {
     pb_wire_type_t wire_type;
@@ -64,18 +66,21 @@ int frame_decode(uint8_t *buffer, uint16_t count)
     {
         node_info_req_t msg = node_info_req_t_init_default;
         status = decode_unionmessage_contents(&stream, node_info_req_t_fields, &msg);
-        printf("decode timestamp is %ld, node_id is %ld, temperature is %.2f, error_code is %d\r\n",
-               (uint32_t)msg.timestamp, (uint32_t)msg.node_id, msg.temperature, (int)msg.error_code);
-        msg_t send_msg;
-        msg_try_send(&send_msg, sample_pid);
-        printf("receive rsp send msg pid is %d\r\n", sample_pid);
+        printf("--------------node_info_req handler---------------\r\n");
+        collection_node_req_handler(msg);
+
+        // msg_t send_msg;
+        // msg_try_send(&send_msg, sample_pid);
+        // printf("receive rsp send msg pid is %d\r\n", sample_pid);
     }
     else if (type == node_info_rsp_t_fields)
     {
         node_info_rsp_t msg = {};
         status = decode_unionmessage_contents(&stream, node_info_rsp_t_fields, &msg);
-        printf("decode timestamp is %ld, node_id is %ld\r\n",
+        printf("--------------node_info_rsp handler---------------\r\n");
+        printf("--------------------decode timestamp is %ld, node_id is %ld\r\n",
                (uint32_t)msg.timestamp, msg.node_id);
+        collection_node_rsp_handler(msg);
     }
     else
     {
