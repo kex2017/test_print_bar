@@ -51,10 +51,12 @@ int frame_handler(uint8_t *data, uint16_t len)
 
     return 0;
 }
-
+#include "xtimer_frame.h"
+extern void test_event(void);
 int main(void)
 {
-    frame_recv_init(frame_handler);
+    frame_recv_init(FRAME_UART_DEV, FRAME_UART_BAUDRATE, CHAR_INTERVAL, frame_handler);
+    // test_event();
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);

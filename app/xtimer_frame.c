@@ -1,15 +1,18 @@
 
 #include "xtimer_frame.h"
 
-#include "xtimer.h"
-#include "periph/uart.h"
-#include "msg.h"
-
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>
 
 #define USE_RINGBUFF (0)
+#define USE_MSG (1)
+
+#if USE_MSG
+#include "msg.h"
+#else
+#include "event.h"
+#include "event/timeout.h"
+#endif
 
 #if USE_RINGBUFF
 #include "ringbuffer_v2.h"
@@ -22,79 +25,101 @@ char frame_data_pending_queue_buf[PAYLOAD_LEN * PAYLOAD_NUM];
 unsigned int frame_data_pending_queue_data_real_len_list[PAYLOAD_NUM];
 #endif
 
+#if USE_MSG
+#define TIMER_MSG_NUM (8)
 static msg_t _msg_q[TIMER_MSG_NUM];
+static msg_t timer_out_msg;
+#else
+static event_queue_t queue;
+static event_t event;
+#endif
 
 kernel_pid_t frame_recv_pid;
+#define FRAME_RECV_PRIORITY (6)
+#define FRAME_RECV_STACKSIZE (1024)
+char frame_recv_stack[FRAME_RECV_STACKSIZE];
 
-static xtimer_t g_xtime;
-static char frame_cache[256];
-static unsigned frame_len = 0;
-static uint32_t g_char_interval = 0;
+xtimer_frame_t g_xtimer_frame;
 
 void timer_timeout_handler(void *param)
 {
     (void)param;
 
-    msg_t timer_out_msg;
+#if USE_MSG
     msg_send_int(&timer_out_msg, frame_recv_pid);
+#else
+    event_post(&queue, &event);
+#endif
 }
 
 void rx_cb(void *arg, uint8_t data)
 {
     (void)arg;
-    uint32_t char_interval = *((uint32_t *)arg);
-
 #if USE_RINGBUFF
     ringbuffer_v2_add_one(&frame_data_pending_queue, (char *)&data, 1);
 #else
-    frame_cache[frame_len++] = data;
+    g_xtimer_frame.frame_cache[g_xtimer_frame.frame_cache_len++] = data;
 #endif
-    xtimer_set(&g_xtime, char_interval);
+    xtimer_set(&g_xtimer_frame.frame_xtimer, g_xtimer_frame.frame_char_interval);
 }
 
-void xtimer_frame_init(uint32_t char_interval)
+void xtimer_frame_init(void)
 {
-    g_xtime.callback = timer_timeout_handler;
+    g_xtimer_frame.frame_xtimer.callback = timer_timeout_handler;
 
-    g_char_interval = char_interval;
+    uart_init(g_xtimer_frame.frame_uart, g_xtimer_frame.frame_uart_baudrate, rx_cb, NULL);
 
-    uart_init(FRAME_UART_DEV, FRAME_UART_BAUDRATE, rx_cb, &g_char_interval);
 #if USE_RINGBUFF
     ringbuffer_v2_init(&frame_data_pending_queue, frame_data_pending_queue_buf, PAYLOAD_LEN, PAYLOAD_NUM, frame_data_pending_queue_data_real_len_list);
-#else
-    memset(frame_cache, 0, sizeof(frame_cache));
 #endif
+    memset(g_xtimer_frame.frame_cache, 0, sizeof(g_xtimer_frame.frame_cache));
+
+}
+
+void xtimer_frame_parse_setup(uint8_t uart_dev, uint32_t uart_baudrate, uint32_t frame_char_interval, frame_recv_handler_t frame_recv_handler)
+{
+    g_xtimer_frame.frame_uart = uart_dev;
+    g_xtimer_frame.frame_uart_baudrate = uart_baudrate;
+    g_xtimer_frame.frame_char_interval = frame_char_interval;
+    g_xtimer_frame.frame_recv_handler = frame_recv_handler;
 }
 
 void *_frame_receive_service(void *arg)
 {
+    (void)arg;
+#if USE_MSG
     msg_t int_msg;
-
-    frame_recv_handler_t frame_handler = (frame_recv_handler_t)arg;
-
     msg_init_queue(_msg_q, TIMER_MSG_NUM);
-    xtimer_frame_init(CHAR_INTERVAL);
+#else
+    event_queue_init(&queue);
+#endif
+    xtimer_frame_init();
 
     while (1)
     {
+#if USE_MSG
         msg_receive(&int_msg);
-#if USE_RINGBUFF
-        ringbuffer_v2_get_one(&frame_data_pending_queue, frame_cache, &frame_len);
+        puts("receive message...");
+#else
+        event_wait(&queue);
+        puts("receive event...");
 #endif
-        frame_handler((uint8_t*)frame_cache, frame_len);
-
-        memset(frame_cache, 0, sizeof(frame_cache));
-        frame_len = 0;
+#if USE_RINGBUFF
+        ringbuffer_v2_get_one(&frame_data_pending_queue, g_xtimer_frame.frame_cache, &g_xtimer_frame.frame_cache_len);
+#endif
+        g_xtimer_frame.frame_recv_handler((uint8_t *)g_xtimer_frame.frame_cache, g_xtimer_frame.frame_cache_len);
+        memset(g_xtimer_frame.frame_cache, 0, sizeof(g_xtimer_frame.frame_cache));
+        g_xtimer_frame.frame_cache_len = 0;
     }
 
     return NULL;
 }
 
-#define FRAME_RECV_PRIORITY (6)
-#define FRAME_RECV_STACKSIZE (1024)
-char frame_recv_stack[FRAME_RECV_STACKSIZE];
-void frame_recv_init(frame_recv_handler_t frame_recv_handler)
+void frame_recv_init(uint8_t uart_dev, uint32_t uart_baudrate, uint32_t frame_char_interval, frame_recv_handler_t frame_recv_handler)
 {
+    xtimer_frame_parse_setup(uart_dev, uart_baudrate, frame_char_interval, frame_recv_handler);
+
     frame_recv_pid = thread_create(frame_recv_stack, sizeof(frame_recv_stack),
-                                   FRAME_RECV_PRIORITY, THREAD_CREATE_STACKTEST, _frame_receive_service, frame_recv_handler, "_frame_receive_service");
+                                   FRAME_RECV_PRIORITY, THREAD_CREATE_STACKTEST,
+                                   _frame_receive_service, NULL, "_frame_receive_service");
 }

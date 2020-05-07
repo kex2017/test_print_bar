@@ -42,6 +42,9 @@ USEMODULE += ds18
 USEMODULE += frame_paser
 # USEMODULE += log_printftimestamp
 
+USEMODULE += event_callback
+USEMODULE += event_timeout
+
 DRIVER ?= sx1276
 
 USEMODULE += $(DRIVER)
