@@ -509,7 +509,14 @@ void *_recv_thread(void *arg)
 #include "board.h"
 int main(void)
 {
-    if (1)
+
+    gpio_clear(SX127X_PARAM_RESET);
+    gpio_clear(SX127X_PARAM_DIO0);
+    gpio_clear(SX127X_PARAM_DIO1);
+    gpio_clear(SX127X_PARAM_DIO2);
+    gpio_clear(SX127X_PARAM_DIO3);
+
+    if (0)
     {
         lora_vcc_b_on();
         xtimer_sleep(2);
