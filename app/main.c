@@ -523,7 +523,7 @@ int main(void)
     if (1)
     {
         lora_vcc_b_on();
-        // xtimer_usleep(500);
+        xtimer_usleep(500);
         // xtimer_sleep(2);
 
         sx127x.params = sx127x_params[0];
