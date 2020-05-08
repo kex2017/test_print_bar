@@ -516,10 +516,15 @@ int main(void)
     // gpio_clear(SX127X_PARAM_DIO2);
     // gpio_clear(SX127X_PARAM_DIO3);
 
+    // setup 125 7 5
+    // channel set 480000000
+    // send 12345
+
     if (1)
     {
         lora_vcc_b_on();
-        // xtimer_usleep(400);
+        // xtimer_usleep(500);
+        // xtimer_sleep(2);
 
         sx127x.params = sx127x_params[0];
         netdev_t *netdev = (netdev_t *)&sx127x;
@@ -546,6 +551,7 @@ int main(void)
         /* start the shell */
         puts("Initialization successful - starting the shell now");
     }
+
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
 
