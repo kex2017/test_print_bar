@@ -510,16 +510,16 @@ void *_recv_thread(void *arg)
 int main(void)
 {
 
-    gpio_clear(SX127X_PARAM_RESET);
-    gpio_clear(SX127X_PARAM_DIO0);
-    gpio_clear(SX127X_PARAM_DIO1);
-    gpio_clear(SX127X_PARAM_DIO2);
-    gpio_clear(SX127X_PARAM_DIO3);
+    // gpio_clear(SX127X_PARAM_RESET);
+    // gpio_clear(SX127X_PARAM_DIO0);
+    // gpio_clear(SX127X_PARAM_DIO1);
+    // gpio_clear(SX127X_PARAM_DIO2);
+    // gpio_clear(SX127X_PARAM_DIO3);
 
-    if (0)
+    if (1)
     {
         lora_vcc_b_on();
-        xtimer_sleep(2);
+        // xtimer_usleep(400);
 
         sx127x.params = sx127x_params[0];
         netdev_t *netdev = (netdev_t *)&sx127x;
