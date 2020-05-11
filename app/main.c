@@ -509,7 +509,7 @@ void *_recv_thread(void *arg)
 #include "board.h"
 int main(void)
 {
-
+    lora_vcc_b_init();
     // gpio_clear(SX127X_PARAM_RESET);
     // gpio_clear(SX127X_PARAM_DIO0);
     // gpio_clear(SX127X_PARAM_DIO1);
@@ -524,7 +524,7 @@ int main(void)
     {
         lora_vcc_b_on();
         xtimer_usleep(500);
-        // xtimer_sleep(2);
+        xtimer_sleep(2);
 
         sx127x.params = sx127x_params[0];
         netdev_t *netdev = (netdev_t *)&sx127x;
