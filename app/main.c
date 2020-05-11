@@ -462,6 +462,7 @@ static void _event_cb(netdev_t *dev, netdev_event_t event)
                 message, (int)len,
                 (int8_t)packet_info.rssi, (int)packet_info.snr,
                 sx127x_get_time_on_air((const sx127x_t *)dev, len));
+            len = len > 10 ? 10 : len;
             for (uint16_t i = 0; i < len; i++)
             {
                 printf("%02x ", message[i]);
