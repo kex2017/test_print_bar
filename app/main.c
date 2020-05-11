@@ -468,8 +468,16 @@ static void _event_cb(netdev_t *dev, netdev_event_t event)
             }
             puts("");
             uint8_t id = message[0];
-            float  temp = (float)(message[4] << 24 | message[3] << 16 | message[2] << 8 | message[1]);
-            printf("id is %d, temp is %.2f\r\n", id, temp);
+            uint8_t tmp;
+            uint8_t *p = &tmp;
+
+            *p = message[4];
+            *(p+1) = message[3];
+            *(p+2) = message[2];
+            *(p+3) = message[1];
+
+            float  *temp = (float*)(p);
+            printf("id is %d, temp is %.2f\r\n", id, *temp);
             break;
 
         case NETDEV_EVENT_TX_COMPLETE:

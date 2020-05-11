@@ -26,6 +26,8 @@ FEATURES_REQUIRED += periph_gpio
 FEATURES_REQUIRED += periph_spi
 # FEATURES_REQUIRED += periph_rtt
 
+USEMODULE += printf_float
+
 USEMODULE += od
 USEMODULE += shell
 USEMODULE += shell_commands
