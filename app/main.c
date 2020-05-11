@@ -467,7 +467,9 @@ static void _event_cb(netdev_t *dev, netdev_event_t event)
                 printf("%02x ", message[i]);
             }
             puts("");
-
+            uint8_t id = message[0];
+            float  temp = (float)(message[4] << 24 | message[3] << 16 | message[2] << 8 | message[1]);
+            printf("id is %d, temp is %.2f\r\n", id, temp);
             break;
 
         case NETDEV_EVENT_TX_COMPLETE:
