@@ -460,8 +460,14 @@ static void _event_cb(netdev_t *dev, netdev_event_t event)
             printf(
                 "{Payload: \"%s\" (%d bytes), RSSI: %i, SNR: %i, TOA: %" PRIu32 "}\n",
                 message, (int)len,
-                packet_info.rssi, (int)packet_info.snr,
+                (int8_t)packet_info.rssi, (int)packet_info.snr,
                 sx127x_get_time_on_air((const sx127x_t *)dev, len));
+            for (uint16_t i = 0; i < len; i++)
+            {
+                printf("%02x ", message[i]);
+            }
+            puts("");
+
             break;
 
         case NETDEV_EVENT_TX_COMPLETE:
