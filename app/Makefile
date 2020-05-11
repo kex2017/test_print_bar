@@ -28,6 +28,10 @@ FEATURES_REQUIRED += periph_spi
 
 USEMODULE += printf_float
 
+USEMODULE += progress_bar
+
+USEMODULE += newlib
+
 USEMODULE += od
 USEMODULE += shell
 USEMODULE += shell_commands
