@@ -36,6 +36,13 @@ USEMODULE += xtimer
 USEMODULE += isrpipe
 USEMODULE += isrpipe_read_timeout
 
+USEMODULE += embunit
+
+USEMODULE += crypto
+USEMODULE += cipher_modes
+
+CFLAGS += -DCRYPTO_THREEDES
+
 DRIVER ?= sx1276
 
 USEMODULE += $(DRIVER)
